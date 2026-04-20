@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LegalOps</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+  </head>
+
+  <body>
+    <header class="topbar">
+      <h1>LegalOps Enterprise</h1>
+      <nav>
+        <%= link_to 'Dashboard', root_path %>
+        <%= link_to 'Cases', legal_cases_path %>
+        <%= link_to 'Clients', clients_path %>
+      </nav>
+    </header>
+
+    <main class="container">
+      <% flash.each do |type, message| %>
+        <div class="flash flash-<%= type %>"><%= message %></div>
+      <% end %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

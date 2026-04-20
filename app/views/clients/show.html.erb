@@ -1,0 +1,6 @@
+<section class="card">
+  <h2><%= @client.name %></h2>
+  <p><strong>Email:</strong> <%= @client.email %></p>
+  <p><strong>Phone:</strong> <%= @client.phone %></p>
+  <p><strong>Status:</strong> <%= @client.active? ? 'Active' : 'Inactive' %></p>
+</section>

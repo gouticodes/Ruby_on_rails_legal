@@ -1,0 +1,10 @@
+<% if object.errors.any? %>
+  <div class="card" style="border: 1px solid #fecaca;">
+    <h3>Please fix the following:</h3>
+    <ul>
+      <% object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
