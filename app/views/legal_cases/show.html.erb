@@ -1,0 +1,8 @@
+<section class="card">
+  <h2><%= @legal_case.title %></h2>
+  <p><strong>Case number:</strong> <%= @legal_case.case_number %></p>
+  <p><strong>Jurisdiction:</strong> <%= @legal_case.jurisdiction %></p>
+  <p><strong>Status:</strong> <%= @legal_case.status.humanize %></p>
+  <p><strong>Client:</strong> <%= @legal_case.client.name %></p>
+  <p><%= @legal_case.summary %></p>
+</section>
