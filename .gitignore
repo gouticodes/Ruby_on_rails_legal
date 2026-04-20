@@ -1,0 +1,15 @@
+/.bundle
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/tmp/pids/*
+/tmp/cache/*
+/tmp/sockets/*
+/public/assets
+/public/packs
+/node_modules
+/vendor/bundle
+.byebug_history
+.DS_Store
+coverage/
