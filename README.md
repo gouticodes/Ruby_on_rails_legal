@@ -41,8 +41,24 @@ Runs when commits land on `production` branch:
 
 ## Local Development
 
+### Option A: Docker Compose plugin (new syntax)
+
 ```bash
 docker compose up --build
+```
+
+### Option B: Legacy standalone Compose binary
+
+If your machine shows `unknown flag: --build` or does not recognize `docker compose`, use:
+
+```bash
+docker-compose up --build
+```
+
+### Quick health check
+
+```bash
+docker compose version || docker-compose version
 ```
 
 App: `http://localhost:3000`
