@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$PROJECT_DIR"
+
+if docker compose version >/dev/null 2>&1; then
+  COMPOSE=(docker compose)
+else
+  COMPOSE=(docker-compose)
+fi
+
+echo "Using compose command: ${COMPOSE[*]}"
+echo "Project root: $PROJECT_DIR"
+
+echo "==> Building and starting services"
+"${COMPOSE[@]}" up -d --build
+
+echo "==> Running database setup"
+"${COMPOSE[@]}" exec -T web bash -lc "bundle exec rails db:create db:migrate"
+
+echo "==> Running smoke test"
+"${COMPOSE[@]}" exec -T web bash -lc "bundle exec rspec spec/requests/health_spec.rb"
+
+echo
+echo "✅ Demo is ready."
+echo "Open: http://localhost:3000"
+echo
+echo "Useful demo commands:"
+echo "  ${COMPOSE[*]} ps"
+echo "  ${COMPOSE[*]} logs -f web"
+echo "  ${COMPOSE[*]} down"
