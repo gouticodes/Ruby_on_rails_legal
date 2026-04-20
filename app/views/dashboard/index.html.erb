@@ -1,0 +1,35 @@
+<section class="grid metrics-grid">
+  <% @metrics.each do |label, value| %>
+    <article class="card metric-card">
+      <p class="metric-label"><%= label.to_s.humanize %></p>
+      <h2><%= value %></h2>
+    </article>
+  <% end %>
+</section>
+
+<section class="card">
+  <div class="section-header">
+    <h2>Recently Updated Cases</h2>
+    <%= link_to 'View all', legal_cases_path, class: 'button' %>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Case #</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Client</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @recent_cases.each do |legal_case| %>
+        <tr>
+          <td><%= legal_case.case_number %></td>
+          <td><%= link_to legal_case.title, legal_case_path(legal_case) %></td>
+          <td><span class="badge"><%= legal_case.status.humanize %></span></td>
+          <td><%= legal_case.client.name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
