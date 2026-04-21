@@ -1,7 +1,10 @@
-<section class="section-header">
-  <h2>Clients</h2>
+<header class="page-header">
+  <div>
+    <h2>Clients</h2>
+    <p class="subtitle">Maintain contact records and activity status for all clients.</p>
+  </div>
   <%= link_to 'New Client', new_client_path, class: 'button' %>
-</section>
+</header>
 
 <section class="card">
   <table class="table">
@@ -19,7 +22,11 @@
           <td><%= link_to client.name, client_path(client) %></td>
           <td><%= client.email %></td>
           <td><%= client.phone %></td>
-          <td><%= client.active? ? 'Active' : 'Inactive' %></td>
+          <td>
+            <span class="badge <%= 'active' if client.active? %>">
+              <%= client.active? ? 'Active' : 'Inactive' %>
+            </span>
+          </td>
         </tr>
       <% end %>
     </tbody>
