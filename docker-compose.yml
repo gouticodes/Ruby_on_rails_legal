@@ -1,5 +1,5 @@
 services:
-  web:
+  backend:
     build: .
     command: bash -lc "bundle exec rails server -b 0.0.0.0 -p 3000"
     volumes:

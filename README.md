@@ -1,128 +1,49 @@
-# Legal Application (Rails API + React Frontend)
+# Ruby on Rails Legal Application
 
-This repository now contains:
+Enterprise-grade Rails application for legal operations, with a professional CI/CD pipeline powered by **GitHub Actions**.
 
-- **Rails backend** for legal domain APIs.
-- **Production-ready React + Vite frontend** in `frontend/`.
+## CI/CD Design
 
-## Frontend Stack
+The pipeline automates the full delivery lifecycle:
 
-- React 18 + Vite
-- React Router 6
-- Tailwind CSS 3
-- Axios
-- Framer Motion (basic animations)
-- React Toastify (toast notifications)
+1. **Continuous Integration (every commit and PR)**
+   - Install dependencies
+   - Prepare PostgreSQL test database
+   - Run RSpec tests
+2. **Continuous Delivery (merge/push to `production`)**
+   - Build Docker image from root `Dockerfile`
+   - Tag image for traceability (`production-latest` + commit SHA)
+   - Publish image to GitHub Container Registry (GHCR)
 
-## Frontend Folder Structure
+## Workflow File
 
-```text
-frontend/
-  src/
-    api/            # axios client + typed service modules
-    app/            # app bootstrap shell
-    components/     # reusable UI components
-      common/       # button, card, loader, input, empty state
-      layout/       # navbar/sidebar/app shell
-      cases/        # case-specific UI
-      documents/    # document upload UI
-      audit/        # audit logs table
-    context/        # auth + theme state
-    hooks/          # reusable hooks (async state)
-    pages/          # route pages
-    router/         # route configuration + guards
-    utils/          # storage and utility modules
-```
+- `.github/workflows/rails-cicd.yml`
 
-## Environment Variables
+## Branch Strategy
 
-Copy and edit:
+- All branches and PRs trigger CI testing.
+- Only pushes to `production` trigger container artifact creation/publishing.
 
-```bash
-cp frontend/.env.example frontend/.env
-```
+## Required GitHub Settings
 
-- `VITE_API_BASE_URL`: Rails API base URL (e.g. `http://localhost:3000/api/v1`)
-- `VITE_APP_NAME`: Optional app name
+- Ensure GitHub Actions is enabled.
+- Protect `production` branch and require passing checks.
+- Repository must allow package publishing to GHCR.
+
+## Required Secrets/Permissions
+
+This workflow uses:
+
+- `GITHUB_TOKEN` (built-in, used for GHCR push)
 
 ## Local Development
 
-### 1) Run Rails API
-
 ```bash
-bundle install
-bin/rails db:prepare
-bin/rails server
+docker compose up --build
 ```
 
-### 2) Run Frontend
+## Pipeline Summary
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Default Vite URL: `http://localhost:5173`.
-
-## Production Build
-
-```bash
-cd frontend
-npm ci
-npm run build
-npm run preview
-```
-
-## Security Notes (JWT)
-
-- Current implementation stores JWT in `localStorage` for simple SPA compatibility.
-- **Recommended production hardening**: issue auth tokens via secure, `HttpOnly`, `SameSite=Strict` cookies from Rails and add CSRF protections.
-- Route protection and role-based rendering are enforced in the client through `PrivateRoute` and role checks.
-
-## Key Frontend Features
-
-- Login/Register forms with validation
-- Dashboard with stats + recent activity
-- Case CRUD + filtering
-- Document upload and document list viewer
-- User profile management
-- Audit logs viewer (admin only)
-- Error and loading states
-- Dark mode toggle
-- Toast notifications
-- Lazy-loaded route chunks
-
-## CI/CD Compatibility
-
-The frontend includes deterministic scripts usable from GitHub Actions/Jenkins:
-
-- `npm ci`
-- `npm run lint`
-- `npm run build`
-
-Recommended pipeline stage:
-
-1. Install dependencies (`npm ci`)
-2. Lint (`npm run lint`)
-3. Build (`npm run build`)
-4. Publish static `frontend/dist`
-
-## Deployment Suggestions
-
-### Vercel
-
-- Root directory: `frontend`
-- Build command: `npm run build`
-- Output: `dist`
-- Environment variable: `VITE_API_BASE_URL`
-
-### Netlify
-
-- Base directory: `frontend`
-- Build command: `npm run build`
-- Publish directory: `frontend/dist`
-
-### Docker (example)
-
-Use a multi-stage build for frontend static assets and serve via Nginx or CDN. Pair with Rails API container from existing backend setup.
+- **Fast feedback loop:** every commit tested.
+- **Reliable releases:** production merges produce immutable container artifacts.
+- **Enterprise ready:** deterministic build and publish stages with branch-gated deployment behavior.
