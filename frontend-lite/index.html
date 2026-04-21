@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Legal Case Management System</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="container header-content">
+        <h1 id="app-name">Legal Case Management System</h1>
+        <button id="refresh-btn" class="btn" type="button">Refresh Users</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="toolbar" aria-label="Dashboard controls">
+        <label for="search-input" class="sr-only">Search users</label>
+        <input
+          id="search-input"
+          class="search-input"
+          type="search"
+          placeholder="Search by name, email, or role"
+        />
+      </section>
+
+      <section>
+        <h2 class="section-title">User Dashboard</h2>
+        <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+        <div id="user-list" class="user-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div class="container">&copy; <span id="year"></span> Legal Operations</div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

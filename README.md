@@ -1,128 +1,66 @@
-# Legal Application (Rails API + React Frontend)
+# Legal Application (Rails Backend + Lightweight Frontend)
 
-This repository now contains:
+This repository contains:
 
-- **Rails backend** for legal domain APIs.
-- **Production-ready React + Vite frontend** in `frontend/`.
+- **Ruby on Rails backend** (REST-style endpoints and server-rendered legal management pages).
+- **Lightweight dashboard frontend** built with **HTML + CSS + Vanilla JavaScript**.
+- **Docker Compose setup** running backend, PostgreSQL, and a frontend Nginx container.
 
-## Frontend Stack
+## Frontend Overview
 
-- React 18 + Vite
-- React Router 6
-- Tailwind CSS 3
-- Axios
-- Framer Motion (basic animations)
-- React Toastify (toast notifications)
+The lightweight frontend is located in `frontend-lite/` and includes:
 
-## Frontend Folder Structure
+- `index.html`
+- `styles.css`
+- `script.js`
+- `config.js`
 
-```text
-frontend/
-  src/
-    api/            # axios client + typed service modules
-    app/            # app bootstrap shell
-    components/     # reusable UI components
-      common/       # button, card, loader, input, empty state
-      layout/       # navbar/sidebar/app shell
-      cases/        # case-specific UI
-      documents/    # document upload UI
-      audit/        # audit logs table
-    context/        # auth + theme state
-    hooks/          # reusable hooks (async state)
-    pages/          # route pages
-    router/         # route configuration + guards
-    utils/          # storage and utility modules
-```
+### Features
 
-## Environment Variables
+- Single-page user dashboard
+- App name shown in header
+- User cards (name, email, role)
+- Loading / error / empty states
+- Search/filter input
+- Refresh users button
+- Responsive card grid with subtle hover + fade-in animation
 
-Copy and edit:
+## API Endpoint Used by Frontend
 
-```bash
-cp frontend/.env.example frontend/.env
-```
+- `GET /users`
 
-- `VITE_API_BASE_URL`: Rails API base URL (e.g. `http://localhost:3000/api/v1`)
-- `VITE_APP_NAME`: Optional app name
+Rails exposes `/users` as JSON by mapping existing `Client` records to dashboard user objects.
 
-## Local Development
+## Docker Setup
 
-### 1) Run Rails API
+### Services
 
-```bash
-bundle install
-bin/rails db:prepare
-bin/rails server
-```
+- `web` (Rails API/backend) → `http://localhost:3000`
+- `frontend` (Nginx static frontend + API reverse proxy) → `http://localhost:8080`
+- `db` (PostgreSQL) → `localhost:5432`
 
-### 2) Run Frontend
+### How frontend connects to backend
+
+The frontend uses `API_BASE_URL=/api` from `frontend-lite/config.js`.
+
+Nginx proxies:
+
+- `/api/*` → `http://web:3000/*`
+
+This uses the Docker service name `web` internally, so the frontend and backend communicate inside the Docker network without localhost coupling.
+
+## Run
 
 ```bash
-cd frontend
-npm install
-npm run dev
+docker-compose up --build
 ```
 
-Default Vite URL: `http://localhost:5173`.
+Then open:
 
-## Production Build
+- Frontend dashboard: `http://localhost:8080`
+- Rails backend (direct): `http://localhost:3000`
 
-```bash
-cd frontend
-npm ci
-npm run build
-npm run preview
-```
+## Notes
 
-## Security Notes (JWT)
-
-- Current implementation stores JWT in `localStorage` for simple SPA compatibility.
-- **Recommended production hardening**: issue auth tokens via secure, `HttpOnly`, `SameSite=Strict` cookies from Rails and add CSRF protections.
-- Route protection and role-based rendering are enforced in the client through `PrivateRoute` and role checks.
-
-## Key Frontend Features
-
-- Login/Register forms with validation
-- Dashboard with stats + recent activity
-- Case CRUD + filtering
-- Document upload and document list viewer
-- User profile management
-- Audit logs viewer (admin only)
-- Error and loading states
-- Dark mode toggle
-- Toast notifications
-- Lazy-loaded route chunks
-
-## CI/CD Compatibility
-
-The frontend includes deterministic scripts usable from GitHub Actions/Jenkins:
-
-- `npm ci`
-- `npm run lint`
-- `npm run build`
-
-Recommended pipeline stage:
-
-1. Install dependencies (`npm ci`)
-2. Lint (`npm run lint`)
-3. Build (`npm run build`)
-4. Publish static `frontend/dist`
-
-## Deployment Suggestions
-
-### Vercel
-
-- Root directory: `frontend`
-- Build command: `npm run build`
-- Output: `dist`
-- Environment variable: `VITE_API_BASE_URL`
-
-### Netlify
-
-- Base directory: `frontend`
-- Build command: `npm run build`
-- Publish directory: `frontend/dist`
-
-### Docker (example)
-
-Use a multi-stage build for frontend static assets and serve via Nginx or CDN. Pair with Rails API container from existing backend setup.
+- If needed, customize app branding and endpoint base URL in `frontend-lite/config.js`.
+- The reverse-proxy approach avoids browser CORS issues by keeping API calls same-origin from the frontend container.
