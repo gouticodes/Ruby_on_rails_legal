@@ -7,4 +7,6 @@ Rails.application.routes.draw do
   end
 
   resources :clients
+
+  resources :users, only: [:index], defaults: { format: :json }
 end
