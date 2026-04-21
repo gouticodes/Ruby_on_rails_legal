@@ -9,6 +9,7 @@ services:
     depends_on:
       - db
     environment:
+      RAILS_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/legal_app_development
 
   db:
