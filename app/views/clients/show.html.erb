@@ -1,6 +1,27 @@
+<header class="page-header">
+  <div>
+    <h2><%= @client.name %></h2>
+    <p class="subtitle">Client profile and communication details.</p>
+  </div>
+  <div class="form-actions">
+    <%= link_to 'Edit Client', edit_client_path(@client), class: 'button' %>
+    <%= link_to 'Back to Clients', clients_path, class: 'button secondary' %>
+  </div>
+</header>
+
 <section class="card">
-  <h2><%= @client.name %></h2>
-  <p><strong>Email:</strong> <%= @client.email %></p>
-  <p><strong>Phone:</strong> <%= @client.phone %></p>
-  <p><strong>Status:</strong> <%= @client.active? ? 'Active' : 'Inactive' %></p>
+  <dl class="definition-list">
+    <dt>Email</dt>
+    <dd><%= @client.email %></dd>
+
+    <dt>Phone</dt>
+    <dd><%= @client.phone %></dd>
+
+    <dt>Status</dt>
+    <dd>
+      <span class="badge <%= 'active' if @client.active? %>">
+        <%= @client.active? ? 'Active' : 'Inactive' %>
+      </span>
+    </dd>
+  </dl>
 </section>

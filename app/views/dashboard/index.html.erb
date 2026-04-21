@@ -1,3 +1,11 @@
+<header class="page-header">
+  <div>
+    <h2>Operational Snapshot</h2>
+    <p class="subtitle">Track active matters, case movement, and client growth in one place.</p>
+  </div>
+  <%= link_to 'Create New Case', new_legal_case_path, class: 'button' %>
+</header>
+
 <section class="grid metrics-grid">
   <% @metrics.each do |label, value| %>
     <article class="card metric-card">
@@ -10,7 +18,7 @@
 <section class="card">
   <div class="section-header">
     <h2>Recently Updated Cases</h2>
-    <%= link_to 'View all', legal_cases_path, class: 'button' %>
+    <%= link_to 'View all', legal_cases_path, class: 'button secondary' %>
   </div>
   <table class="table">
     <thead>

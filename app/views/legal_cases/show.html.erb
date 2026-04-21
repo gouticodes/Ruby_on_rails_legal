@@ -1,8 +1,29 @@
+<header class="page-header">
+  <div>
+    <h2><%= @legal_case.title %></h2>
+    <p class="subtitle">Matter details and current progression status.</p>
+  </div>
+  <div class="form-actions">
+    <%= link_to 'Edit Case', edit_legal_case_path(@legal_case), class: 'button' %>
+    <%= link_to 'Back to Cases', legal_cases_path, class: 'button secondary' %>
+  </div>
+</header>
+
 <section class="card">
-  <h2><%= @legal_case.title %></h2>
-  <p><strong>Case number:</strong> <%= @legal_case.case_number %></p>
-  <p><strong>Jurisdiction:</strong> <%= @legal_case.jurisdiction %></p>
-  <p><strong>Status:</strong> <%= @legal_case.status.humanize %></p>
-  <p><strong>Client:</strong> <%= @legal_case.client.name %></p>
-  <p><%= @legal_case.summary %></p>
+  <dl class="definition-list">
+    <dt>Case number</dt>
+    <dd><%= @legal_case.case_number %></dd>
+
+    <dt>Jurisdiction</dt>
+    <dd><%= @legal_case.jurisdiction %></dd>
+
+    <dt>Status</dt>
+    <dd><span class="badge"><%= @legal_case.status.humanize %></span></dd>
+
+    <dt>Client</dt>
+    <dd><%= link_to @legal_case.client.name, client_path(@legal_case.client) %></dd>
+
+    <dt>Summary</dt>
+    <dd><%= @legal_case.summary %></dd>
+  </dl>
 </section>
