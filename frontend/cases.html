@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cases | Legal Case Management System</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body data-page="cases">
+    <div class="layout">
+      <aside class="sidebar" id="sidebar"></aside>
+      <div class="content-shell">
+        <header class="topbar">
+          <h1>Legal Case Management System</h1>
+        </header>
+        <main class="page fade-in">
+          <section class="panel">
+            <div class="panel-header split">
+              <h2>Cases</h2>
+              <div class="toolbar-actions">
+                <input id="case-search" class="input" type="search" placeholder="Search cases" />
+                <button id="add-case-btn" class="btn">Add Case</button>
+              </div>
+            </div>
+            <p id="cases-status" class="status"></p>
+            <div id="cases-table-wrap" class="table-wrap"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div id="case-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3 id="modal-title">Add Case</h3>
+        <form id="case-form" class="form-grid">
+          <input type="hidden" id="case-id" />
+          <label>Title<input id="case-title" class="input" required /></label>
+          <label>Case Number<input id="case-number" class="input" required /></label>
+          <label>Jurisdiction<input id="case-jurisdiction" class="input" required /></label>
+          <label>Status
+            <select id="case-status" class="input">
+              <option value="open">Open</option>
+              <option value="in_progress">In Progress</option>
+              <option value="closed">Closed</option>
+            </select>
+          </label>
+          <label>Assigned User
+            <select id="case-user" class="input" required></select>
+          </label>
+          <label class="full-width">Summary<textarea id="case-summary" class="input" rows="4"></textarea></label>
+          <div class="modal-actions full-width">
+            <button type="button" id="close-modal" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cases.js"></script>
+  </body>
+</html>

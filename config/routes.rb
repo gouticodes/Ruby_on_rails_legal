@@ -8,5 +8,9 @@ Rails.application.routes.draw do
 
   resources :clients
 
-  resources :users, only: [:index], defaults: { format: :json }
+  namespace :api, defaults: { format: :json } do
+    resources :users, only: [:index]
+    resources :cases, only: %i[index create update destroy]
+    resources :documents, only: [:index]
+  end
 end

@@ -1,92 +1,76 @@
-# Legal Application (Rails Backend + Lightweight Frontend)
+# Legal Case Management System
 
-This repository contains:
+A Dockerized **Rails backend** plus a **multi-page Vanilla JS frontend** served by Nginx.
 
-- **Ruby on Rails backend** (REST-style endpoints and server-rendered legal management pages).
-- **Lightweight dashboard frontend** built with **HTML + CSS + Vanilla JavaScript**.
-- **Docker Compose setup** running backend, PostgreSQL, and a frontend Nginx container.
+## Architecture
 
-## Frontend Overview
+- **backend**: Ruby on Rails app (`http://localhost:3000`)
+- **frontend**: Nginx serving static files (`http://localhost:8080`)
+- **db**: PostgreSQL
 
-The lightweight frontend is located in `frontend-lite/` and includes:
+Frontend calls backend using `/api/*`.
+Nginx proxies `/api/*` to the Docker service name `backend`.
 
-- `index.html`
-- `styles.css`
-- `script.js`
-- `config.js`
+## Frontend Structure
 
-### Features
+```text
+frontend/
+  index.html
+  users.html
+  cases.html
+  documents.html
+  profile.html
+  css/styles.css
+  js/config.js
+  js/api.js
+  js/main.js
+  js/users.js
+  js/cases.js
+  js/documents.js
+  Dockerfile
+  nginx.conf
+```
 
-- Single-page user dashboard
-- App name shown in header
-- User cards (name, email, role)
-- Loading / error / empty states
-- Search/filter input
-- Refresh users button
-- Responsive card grid with subtle hover + fade-in animation
+## Frontend Pages
 
-## API Endpoint Used by Frontend
+- **Dashboard (`index.html`)**
+  - Summary cards: users, cases, documents
+  - Recent activity list
+- **Users (`users.html`)**
+  - User table + card layout
+  - Live search/filter
+- **Cases (`cases.html`)**
+  - Case table with search
+  - Modal create/edit
+  - Delete case action
+- **Documents (`documents.html`)**
+  - Document list from API
+  - Simple local add form
+- **Profile (`profile.html`)**
+  - Static profile section
 
-- `GET /users`
+## Backend API Endpoints Used
 
-Rails exposes `/users` as JSON by mapping existing `Client` records to dashboard user objects.
-
-## Docker Setup
-
-### Services
-
-- `web` (Rails API/backend) → `http://localhost:3000`
-- `frontend` (Nginx static frontend + API reverse proxy) → `http://localhost:8080`
-- `db` (PostgreSQL) → `localhost:5432`
-
-### How frontend connects to backend
-
-The frontend uses `API_BASE_URL=/api` from `frontend-lite/config.js`.
-
-Nginx proxies:
-
-- `/api/*` → `http://web:3000/*`
-
-This uses the Docker service name `web` internally, so the frontend and backend communicate inside the Docker network without localhost coupling.
+- `GET /api/users`
+- `GET /api/cases`
+- `POST /api/cases`
+- `PUT /api/cases/:id`
+- `DELETE /api/cases/:id`
+- `GET /api/documents`
 
 ## Run
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Then open:
 
-- Frontend dashboard: `http://localhost:8080`
-- Rails backend (direct): `http://localhost:3000`
+- Frontend UI: `http://localhost:8080`
+- Backend API: `http://localhost:3000`
 
-## Notes
+## Backend Compatibility Notes
 
-- If needed, customize app branding and endpoint base URL in `frontend-lite/config.js`.
-- The reverse-proxy approach avoids browser CORS issues by keeping API calls same-origin from the frontend container.
-
-## Run Backend and Frontend Separately
-
-From repository root:
-
-### Start backend + database only
-
-```bash
-docker compose up --build web db
-```
-
-Backend API will be available at `http://localhost:3000`.
-
-### Start frontend only (requires backend service running)
-
-```bash
-docker compose up --build frontend
-```
-
-Frontend dashboard will be available at `http://localhost:8080`.
-
-### Start everything together
-
-```bash
-docker compose up --build
-```
+- CORS is enabled for `/api/*`.
+- Docker proxy target uses service name `backend`.
+- Frontend API base URL is configurable in `frontend/js/config.js`.

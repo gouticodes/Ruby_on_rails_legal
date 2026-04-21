@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard | Legal Case Management System</title>
+    <title>Users | Legal Case Management System</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
-  <body data-page="dashboard">
+  <body data-page="users">
     <div class="layout">
       <aside class="sidebar" id="sidebar"></aside>
       <div class="content-shell">
@@ -14,15 +14,14 @@
           <h1>Legal Case Management System</h1>
         </header>
         <main class="page fade-in">
-          <section class="cards-grid" id="summary-cards">
-            <article class="stat-card"><h3>Total Users</h3><p id="total-users">--</p></article>
-            <article class="stat-card"><h3>Total Cases</h3><p id="total-cases">--</p></article>
-            <article class="stat-card"><h3>Total Documents</h3><p id="total-documents">--</p></article>
-          </section>
-
           <section class="panel">
-            <div class="panel-header"><h2>Recent Activity</h2></div>
-            <div id="recent-activity" class="list-block"></div>
+            <div class="panel-header split">
+              <h2>Users</h2>
+              <input id="user-search" class="input" type="search" placeholder="Search users" />
+            </div>
+            <p id="users-status" class="status"></p>
+            <div id="users-table-wrap" class="table-wrap"></div>
+            <div id="users-cards" class="cards-grid"></div>
           </section>
         </main>
       </div>
@@ -32,5 +31,6 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/users.js"></script>
   </body>
 </html>
