@@ -1,43 +1,100 @@
-<header class="page-header">
-  <div>
-    <h2>Operational Snapshot</h2>
-    <p class="subtitle">Track active matters, case movement, and client growth in one place.</p>
-  </div>
-  <%= link_to 'Create New Case', new_legal_case_path, class: 'button' %>
-</header>
+<div id="dashboard-react-root"></div>
 
-<section class="grid metrics-grid">
-  <% @metrics.each do |label, value| %>
-    <article class="card metric-card">
-      <p class="metric-label"><%= label.to_s.humanize %></p>
-      <h2><%= value %></h2>
-    </article>
-  <% end %>
-</section>
+<script id="dashboard-data" type="application/json">
+  <%= raw json_escape({
+    metrics: @metrics,
+    recent_cases: @recent_cases.map do |legal_case|
+      {
+        id: legal_case.id,
+        case_number: legal_case.case_number,
+        title: legal_case.title,
+        status: legal_case.status.to_s.humanize,
+        client_name: legal_case.client.name,
+        path: legal_case_path(legal_case)
+      }
+    end,
+    paths: {
+      new_case: new_legal_case_path,
+      cases: legal_cases_path,
+      clients: clients_path
+    }
+  }.to_json) %>
+</script>
 
-<section class="card">
-  <div class="section-header">
-    <h2>Recently Updated Cases</h2>
-    <%= link_to 'View all', legal_cases_path, class: 'button secondary' %>
-  </div>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Case #</th>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Client</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @recent_cases.each do |legal_case| %>
-        <tr>
-          <td><%= legal_case.case_number %></td>
-          <td><%= link_to legal_case.title, legal_case_path(legal_case) %></td>
-          <td><span class="badge"><%= legal_case.status.humanize %></span></td>
-          <td><%= legal_case.client.name %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</section>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+  const dashboardPayload = JSON.parse(document.getElementById('dashboard-data').textContent);
+
+  function DashboardApp() {
+    const cardStyle = {
+      background: '#ffffff',
+      borderRadius: '16px',
+      padding: '18px',
+      border: '1px solid #e2e8f0',
+      boxShadow: '0 8px 24px rgba(15, 23, 42, 0.08)'
+    };
+
+    return (
+      <div style={{ fontFamily: 'Inter, Arial, sans-serif', background: '#f1f5f9', minHeight: '100vh', padding: '24px' }}>
+        <div style={{ maxWidth: '1120px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
+            <div>
+              <h1 style={{ margin: 0, color: '#0f172a' }}>LegalOps Dashboard</h1>
+              <p style={{ margin: '8px 0 0', color: '#475569' }}>React-based operational UI for legal teams.</p>
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <a href={dashboardPayload.paths.new_case} style={{ background: '#1d4ed8', color: '#fff', textDecoration: 'none', padding: '10px 14px', borderRadius: '10px', fontWeight: 600 }}>New Case</a>
+              <a href={dashboardPayload.paths.cases} style={{ background: '#e2e8f0', color: '#0f172a', textDecoration: 'none', padding: '10px 14px', borderRadius: '10px', fontWeight: 600 }}>All Cases</a>
+              <a href={dashboardPayload.paths.clients} style={{ background: '#e2e8f0', color: '#0f172a', textDecoration: 'none', padding: '10px 14px', borderRadius: '10px', fontWeight: 600 }}>Clients</a>
+            </div>
+          </div>
+
+          <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+            {Object.entries(dashboardPayload.metrics).map(([label, value]) => (
+              <article key={label} style={cardStyle}>
+                <p style={{ margin: '0 0 10px', color: '#64748b', textTransform: 'uppercase', fontSize: '12px', letterSpacing: '0.05em' }}>
+                  {label.replace(/_/g, ' ')}
+                </p>
+                <h2 style={{ margin: 0, color: '#1e3a8a', fontSize: '30px' }}>{value}</h2>
+              </article>
+            ))}
+          </section>
+
+          <section style={cardStyle}>
+            <h2 style={{ marginTop: 0, marginBottom: '12px', color: '#0f172a' }}>Recently Updated Cases</h2>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr>
+                    {['Case #', 'Title', 'Status', 'Client'].map((heading) => (
+                      <th key={heading} style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid #e2e8f0', color: '#334155' }}>{heading}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardPayload.recent_cases.map((legalCase) => (
+                    <tr key={legalCase.id}>
+                      <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9' }}>{legalCase.case_number}</td>
+                      <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9' }}>
+                        <a href={legalCase.path} style={{ color: '#1d4ed8', textDecoration: 'none', fontWeight: 600 }}>{legalCase.title}</a>
+                      </td>
+                      <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9' }}>
+                        <span style={{ background: '#dbeafe', color: '#1e3a8a', padding: '3px 10px', borderRadius: '999px', fontSize: '12px' }}>{legalCase.status}</span>
+                      </td>
+                      <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9' }}>{legalCase.client_name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('dashboard-react-root')).render(<DashboardApp />);
+</script>

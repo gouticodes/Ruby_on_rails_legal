@@ -5,27 +5,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
   </head>
 
-  <body>
-    <header class="topbar">
-      <div class="brand">
-        <h1>LegalOps Enterprise</h1>
-        <p>Case lifecycle and client operations dashboard</p>
+  <body style="margin: 0;">
+    <% flash.each do |type, message| %>
+      <div style="margin: 12px; padding: 10px; border-radius: 8px; background: <%= type.to_s == 'alert' ? '#fee2e2' : '#dcfce7' %>; color: #0f172a;">
+        <%= message %>
       </div>
-      <nav>
-        <%= link_to 'Dashboard', root_path %>
-        <%= link_to 'Cases', legal_cases_path %>
-        <%= link_to 'Clients', clients_path %>
-      </nav>
-    </header>
-
-    <main class="container">
-      <% flash.each do |type, message| %>
-        <div class="flash flash-<%= type %>"><%= message %></div>
-      <% end %>
-      <%= yield %>
-    </main>
+    <% end %>
+    <%= yield %>
   </body>
 </html>
