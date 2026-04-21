@@ -12,6 +12,15 @@ services:
       RAILS_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/legal_app_development
 
+  frontend:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    depends_on:
+      - web
+    ports:
+      - '8080:80'
+
   db:
     image: postgres:16
     environment:
