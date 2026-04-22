@@ -60,7 +60,3 @@ Then open:
 - Frontend dashboard: `http://localhost:8080`
 - Rails backend (direct): `http://localhost:3000`
 
-## Notes
-
-- If needed, customize app branding and endpoint base URL in `frontend-lite/config.js`.
-- The reverse-proxy approach avoids browser CORS issues by keeping API calls same-origin from the frontend container.
