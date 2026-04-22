@@ -3,9 +3,18 @@ class ClientsController < ApplicationController
 
   def index
     @clients = Client.order(:name)
+    respond_to do |format|
+      format.html
+      format.json { render json: @clients }
+    end
   end
 
-  def show; end
+  def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @client }
+    end
+  end
 
   def new
     @client = Client.new
@@ -13,26 +22,37 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new(client_params)
-    if @client.save
-      redirect_to @client, notice: 'Client created successfully.'
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @client.save
+        format.html { redirect_to @client, notice: 'Client created successfully.' }
+        format.json { render json: @client, status: :created }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { errors: @client.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
   def edit; end
 
   def update
-    if @client.update(client_params)
-      redirect_to @client, notice: 'Client updated successfully.'
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @client.update(client_params)
+        format.html { redirect_to @client, notice: 'Client updated successfully.' }
+        format.json { render json: @client }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { errors: @client.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @client.destroy
-    redirect_to clients_path, notice: 'Client removed.'
+    respond_to do |format|
+      format.html { redirect_to clients_path, notice: 'Client removed.' }
+      format.json { head :no_content }
+    end
   end
 
   private
